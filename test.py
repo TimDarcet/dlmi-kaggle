@@ -33,6 +33,7 @@ preds = torch.cat(preds)
 scores = torch.cat(scores)
 
 uniq_ids = torch.unique(IDs)
+uniq_ids = [f"P{i}" for i in uniq_ids]
 # uniq_scores = [scores[IDs == p_id].mean().item() for p_id in uniq_ids]
 uniq_preds = [int(scores[IDs == p_id].mean().item() > 0) for p_id in uniq_ids]
 print("Aggregated scores")
