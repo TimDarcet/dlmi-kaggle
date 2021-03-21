@@ -22,7 +22,7 @@ IDs = []
 preds = []
 scores = []
 for step, (im, label, patient_id) in enumerate(dm.test_dataloader()):
-    score = model(im)
+    score = model(im).detach()
     scores.append(score)
     preds.append((score > 0).int())
     IDs.append(patient_id)
@@ -33,7 +33,7 @@ scores = torch.cat(scores)
 
 uniq_ids = torch.unique(IDs)
 uniq_scores = []
-uniq_scores = [scores[IDs == p_id].mean() for p_id in uniq_ids]
+uniq_scores = [scores[IDs == p_id].mean().item() for p_id in uniq_ids]
 
 
 results = pd.DataFrame({'Id': uniq_ids,
