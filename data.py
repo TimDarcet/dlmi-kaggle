@@ -70,16 +70,16 @@ class lymph_datamodule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.train_dataset,
                                            batch_size=self.batch_size,
                                            shuffle=True,
-                                           num_workers=8)
+                                           num_workers=2)
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(self.val_dataset,
                                            batch_size=self.batch_size,
                                            shuffle=True,
-                                           num_workers=8)
+                                           num_workers=2)
 
     def test_dataloader(self):
         return torch.utils.data.DataLoader(self.test_dataset,
                                            batch_size=self.batch_size,
                                            shuffle=True,
-                                           num_workers=8)
+                                           num_workers=2)
