@@ -45,17 +45,17 @@ class TransferResNet(pl.LightningModule):
         return self.optimizer(self.parameters(), lr=self.lr)
     
     def training_step(self, batch, batch_idx):
-        image, label = batch
+        image, label, _ = batch
         score = self(image)
         loss = self.criterion(score, label.float())
         self.log("train_loss", loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        image, label = batch
+        image, label, _ = batch
         score = self(image)
         loss = self.criterion(score, label.float())
-        pred = (score > 0.5).int()
+        pred = (score > 0).int()
         acc = (pred == label).sum() / pred.shape[0]
         self.log("val_loss", loss, prog_bar=True)
         self.log("val_acc", acc, prog_bar=True)

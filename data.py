@@ -6,10 +6,6 @@ import torchvision
 import pytorch_lightning as pl
 
 import pandas as pd
-
-
-def lymph_collate_fn(x):
-    image, tabular = x
     
 
 class lymph_dataset(Dataset):
@@ -27,9 +23,9 @@ class lymph_dataset(Dataset):
 
     def __getitem__(self, idx):
         image, lab_idx = self.images[idx]
-        label = self.images.classes[lab_idx]
-        tab_data = self.tabular.loc[label]
-        return image, tab_data.LABEL
+        patient_id = self.images.classes[lab_idx]
+        tab_data = self.tabular.loc[patient_id]
+        return image, tab_data.LABEL, int(patient_id[1:])
 
 
 class lymph_datamodule(pl.LightningDataModule):
@@ -68,7 +64,7 @@ class lymph_datamodule(pl.LightningDataModule):
 
         # Assign test dataset for use in dataloader(s)
         if stage == 'test' or stage is None:
-            self.test_dataset = lymph_dataset(self.test_path, self.test_csv_path, self.test_transform)
+            self.test_dataset = lymph_dataset(self.test_path, self.test_csv_path, self.test_transforms)
 
     def train_dataloader(self):
         return torch.utils.data.DataLoader(self.train_dataset,
