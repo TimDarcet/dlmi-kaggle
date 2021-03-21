@@ -26,8 +26,6 @@ class TransferResNet(pl.LightningModule):
         optimizers = {'adam': Adam, 'sgd': SGD}
 
         self.optimizer = optimizers[optimizer]
-        
-        self.criterion = nn.BCEWithLogitsLoss()
 
         self.resnet = resnets[resnet_version](pretrained=True)
         linear_size = list(self.resnet.children())[-1].in_features
@@ -38,6 +36,8 @@ class TransferResNet(pl.LightningModule):
                 param.requires_grad = False
         self.resnet.eval()
 
+        self.alpha = 4.2  # Comes from dataset imbalance, factor to rebalance the loss
+
     def forward(self, im):
         return self.resnet(im).squeeze()
 
@@ -47,7 +47,8 @@ class TransferResNet(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         image, label, _ = batch
         score = self(image)
-        loss = self.criterion(score, label.float())
+        weights = 1 / (label.float() * (self.alpha - 1) + 1)
+        loss = nn.BCEWithLogitsLoss(weights)(score, label.float())
         self.log("train_loss", loss)
         return loss
 
