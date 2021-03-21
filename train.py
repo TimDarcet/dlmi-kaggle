@@ -19,7 +19,7 @@ model = TransferResNet()
 logger = TensorBoardLogger('logs/tensorboard_logs')
 
 # Define training
-checkpointer = ModelCheckpoint(monitor='val_loss',
+checkpointer = ModelCheckpoint(monitor='val_accbal',
                                save_top_k=3,
                                mode='min',
                                save_last=True,

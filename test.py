@@ -10,7 +10,7 @@ pl.seed_everything(42)
     
 # Handle the data
 dm = lymph_datamodule("data", batch_size=8)
-dm.setup("test")
+dm.setup()
 print("Loaded dataset")
 
 # Define model
