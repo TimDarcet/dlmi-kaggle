@@ -55,9 +55,31 @@ class TransferResNet(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         image, label, _ = batch
         score = self(image)
+        weights = 1 / (label.float() * (self.alpha - 1) + 1)
+        loss = nn.BCEWithLogitsLoss(weights)
         loss = self.criterion(score, label.float())
+        
+        
         pred = (score > 0).int()
         acc = (pred == label).sum() / pred.shape[0]
-        self.log("val_loss", loss, prog_bar=True)
+        
+        # Balanced accuracy
+        ones = label == 1
+        if pred[ones].shape[0] > 0:
+            acc1 = (pred[ones] == label[ones]).sum() / pred[ones].shape[0]
+        else:
+            acc1 = 0.5
+        zeros = label == 0
+        if pred[zeros].shape[0] > 0:
+            acc0 = (pred[zeros] == label[zeros]).sum() / pred[zeros].shape[0]
+        else:
+            acc0 = 0.5
+        accbal = (acc0 + acc1 ) / 2
+        
+        self.log("val_loss", loss)
         self.log("val_acc", acc, prog_bar=True)
+        self.log("val_acc1", acc1, prog_bar=True)
+        self.log("val_acc0", acc0, prog_bar=True)
+        self.log("val_accbal", accbal, prog_bar=True)
+        
         return loss
