@@ -14,7 +14,7 @@ dm.setup("test")
 print("Loaded dataset")
 
 # Define model
-model = TransferResNet.load_from_checkpoint("logs/tensorboard_logs/default/version_20/checkpoints/epoch=1-step=1343.ckpt")
+model = TransferResNet.load_from_checkpoint("logs/tensorboard_logs/default/version_23/checkpoints/epoch=6-step=8748.ckpt")
 model.eval()
 print("Loaded model")
 
