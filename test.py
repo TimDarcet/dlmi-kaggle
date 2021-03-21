@@ -26,16 +26,19 @@ for step, (im, label, patient_id) in enumerate(dm.test_dataloader()):
     scores.append(score)
     preds.append((score > 0).int())
     IDs.append(patient_id)
+print("Calculated individual scores")
 
 IDs = torch.cat(IDs)
 preds = torch.cat(preds)
 scores = torch.cat(scores)
 
 uniq_ids = torch.unique(IDs)
-uniq_scores = []
-uniq_scores = [scores[IDs == p_id].mean().item() for p_id in uniq_ids]
+# uniq_scores = [scores[IDs == p_id].mean().item() for p_id in uniq_ids]
+uniq_preds = [int(scores[IDs == p_id].mean().item() > 0) for p_id in uniq_ids]
+print("Aggregated scores")
 
 
 results = pd.DataFrame({'Id': uniq_ids,
-                        'Predicted': uniq_scores})
+                        'Predicted': uniq_preds})
 results.to_csv('submission_viz.csv', index=False)
+print("Wrote results")
