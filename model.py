@@ -114,7 +114,7 @@ class TransferFeaturizer(pl.LightningModule):
 
     def forward(self, im):
         h = torch.relu(self.resnet(im))
-        return self.classif(h)
+        return self.classif(h).squeeze()
 
     def configure_optimizers(self):
         return self.optimizer(self.parameters(), lr=self.lr)
