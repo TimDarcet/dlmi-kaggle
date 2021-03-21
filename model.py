@@ -56,9 +56,7 @@ class TransferResNet(pl.LightningModule):
         image, label, _ = batch
         score = self(image)
         weights = 1 / (label.float() * (self.alpha - 1) + 1)
-        loss = nn.BCEWithLogitsLoss(weights)
-        loss = self.criterion(score, label.float())
-        
+        loss = nn.BCEWithLogitsLoss(weights)(score, label.float())
         
         pred = (score > 0).int()
         acc = (pred == label).sum() / pred.shape[0]
