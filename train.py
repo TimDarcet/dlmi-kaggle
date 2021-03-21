@@ -4,7 +4,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 from data import lymph_datamodule
-from model import TransferResNet
+from model import *
 
 
 pl.seed_everything(42)
@@ -13,7 +13,7 @@ pl.seed_everything(42)
 dm = lymph_datamodule("data", batch_size=8)
 
 # Define model
-model = TransferResNet()
+model = TransferFeaturizer()
 
 # Exp logger
 logger = TensorBoardLogger('logs/tensorboard_logs')
